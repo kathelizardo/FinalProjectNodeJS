@@ -33,6 +33,12 @@ app.get('/read', async (req, res) => {
     res.json({ user })
 })
 
+app.get('/read/:id', async (req, res) => {
+    const user = await User.findById(req.params.id)
+
+    res.json({ user })
+})
+
 app.get('/update/:id', async (req, res) => {
     const user = await User.findById(req.params.id)
 
