@@ -61,7 +61,6 @@ app.put('/update/:id', async (req, res) => {
 })
 
 //Delete user
-
 app.delete('/delete/:id', async (req, res) => {
     await User.deleteOne({ _id: req.params.id }, () => {
         console.log('Item Deleted')
