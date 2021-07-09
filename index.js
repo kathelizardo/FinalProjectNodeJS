@@ -1,4 +1,4 @@
-const express = require ('express')
+const express = require ('express');
 const mongoose = require ('mongoose');
 const User = require('./models/user');
 
@@ -16,47 +16,57 @@ db.on("error", console.error.bind(console, "Error Connection MongoDB"));
 
 const app = express()
 const port = 3000
+app.use(express.json())
 
-app.get('/create', async (req, res) => {
-    const user = await User.create({ 
-        name: 'Wanda Maximoff',
-        date_birth: '1989',
-        status: true
-    })
-
-    res.json({ user })
+//Welcome
+app.get('/', (req, res) => {
+    res.send('Welcome!! :D')
 })
 
+//Get All Users
 app.get('/read', async (req, res) => {
     const user = await User.find({ })
 
     res.json({ user })
 })
 
+//Get a user by Id
 app.get('/read/:id', async (req, res) => {
     const user = await User.findById(req.params.id)
 
     res.json({ user })
 })
 
-app.get('/update/:id', async (req, res) => {
-    const user = await User.findById(req.params.id)
-
-    user.name = 'Scarlet Witch'
-    user.date_birth = '2010-04-03'
-    user.status = true
-
+//Add a new User
+app.post('/create', async (req, res) => {
+    const user = await User.create({ 
+        name: req.body.name,
+        date_birth: req.body.date_birth,
+        status: req.body.status
+    })
     await user.save()
-
     res.send({ user })
 })
 
-app.get('/delete/:id', async (req, res) => {
+// Edit user
+app.put('/update/:id', async (req, res) => {
+    const user = await User.findById(req.params.id)
+    user.name = req.body.name
+    user.date_birth = req.body.date_birth,
+    user.status = req.body.status
+
+    await user.save()
+    res.send({ user })
+})
+
+//Delete user
+
+app.delete('/delete/:id', async (req, res) => {
     await User.deleteOne({ _id: req.params.id }, () => {
         console.log('Item Deleted')
     })
 
-    res.send('Deleted!')
+    res.send('Successfully Deleted!')
 })
 
 app.listen(port, () => {
